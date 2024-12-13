@@ -5,36 +5,32 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html'); // Enviar el archivo HTML principal
-});
-
-
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static('public')); // Sirve archivos estáticos desde la carpeta "public"
 
 // Solana connection
 const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
+
+// Rutas
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html'); // Enviar el archivo HTML principal
+});
 
 // Buy token endpoint
 app.post('/buy', async (req, res) => {
     const { privateKey, tokenAddress, amountInSol } = req.body;
 
     try {
-        // Parse private key and create wallet
         const wallet = solanaWeb3.Keypair.fromSecretKey(new Uint8Array(privateKey));
         const transaction = new solanaWeb3.Transaction();
-
-        // Example: Add buy logic here (integration with Raydium or Orca)
         const instruction = new solanaWeb3.TransactionInstruction({
             keys: [],
             programId: new solanaWeb3.PublicKey(tokenAddress),
-            data: Buffer.from([]) // Replace with actual data
+            data: Buffer.from([]),
         });
         transaction.add(instruction);
 
-        // Send transaction
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, transaction, [wallet]);
         res.json({ status: 'success', signature });
     } catch (error) {
@@ -47,19 +43,15 @@ app.post('/sell', async (req, res) => {
     const { privateKey, tokenAddress, sellAmount } = req.body;
 
     try {
-        // Parse private key and create wallet
         const wallet = solanaWeb3.Keypair.fromSecretKey(new Uint8Array(privateKey));
         const transaction = new solanaWeb3.Transaction();
-
-        // Example: Add sell logic here
         const instruction = new solanaWeb3.TransactionInstruction({
             keys: [],
             programId: new solanaWeb3.PublicKey(tokenAddress),
-            data: Buffer.from([]) // Replace with actual data
+            data: Buffer.from([]),
         });
         transaction.add(instruction);
 
-        // Send transaction
         const signature = await solanaWeb3.sendAndConfirmTransaction(connection, transaction, [wallet]);
         res.json({ status: 'success', signature });
     } catch (error) {
