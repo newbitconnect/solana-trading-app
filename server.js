@@ -1,29 +1,24 @@
 const express = require('express');
 const solanaWeb3 = require('@solana/web3.js');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 const port = 3000;
-const path = require('path');
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // Middleware
 app.use(bodyParser.json());
-app.use('/public', express.static(path.join(__dirname, 'public')));
- // Sirve archivos estáticos desde la carpeta "public"
+app.use(express.static(path.join(__dirname, 'public'))); // Sirve archivos estáticos desde "public"
 
 // Solana connection
 const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
 
-// Rutas
+// Ruta principal: Servir el archivo HTML desde "public/index.html"
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html'); // Enviar el archivo HTML principal
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Buy token endpoint
+// Endpoint para comprar tokens
 app.post('/buy', async (req, res) => {
     const { privateKey, tokenAddress, amountInSol } = req.body;
 
@@ -44,7 +39,7 @@ app.post('/buy', async (req, res) => {
     }
 });
 
-// Sell token endpoint
+// Endpoint para vender tokens
 app.post('/sell', async (req, res) => {
     const { privateKey, tokenAddress, sellAmount } = req.body;
 
@@ -65,7 +60,7 @@ app.post('/sell', async (req, res) => {
     }
 });
 
-// Start server
+// Iniciar servidor
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
