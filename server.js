@@ -12,7 +12,8 @@ app.get('/', (req, res) => {
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static('public')); // Sirve archivos estáticos desde la carpeta "public"
+app.use('/public', express.static(path.join(__dirname, 'public')));
+ // Sirve archivos estáticos desde la carpeta "public"
 
 // Solana connection
 const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed');
